@@ -1,69 +1,106 @@
-# Docker Support for Visual Studio Code
-The Docker extension makes it easy to build and deploy containerized applications from Visual Studio Code. 
+## Docker for Visual Studio Code  [![Version](https://img.shields.io/visual-studio-marketplace/v/ms-azuretools.vscode-docker)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) [![Installs](https://img.shields.io/visual-studio-marketplace/i/ms-azuretools.vscode-docker)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) [![Build Status](https://dev.azure.com/ms-azuretools/AzCode/_apis/build/status/Nightly/vscode-docker-nightly-2?branchName=main)](https://dev.azure.com/ms-azuretools/AzCode/_build/latest?definitionId=22&branchName=main)
 
-* Automatic `Dockerfile` and `docker-compose.yml` file generation 
-* Syntax highlighting and hover tips for `docker-compose.yml` and `Dockerfile files`
-* IntelliSense (completions) for `Dockerfile` and `docker-compose.yml` files
-* Linting (errors and warnings) for `Dockerfile` files
-* Command Palette (`F1`) integration for the most common Docker commands (e.g. Build, Push)
-* Explorer integration for managing Images and Containers
-* Deploy images to the cloud by running the [Azure CLI](https://github.com/azure/azure-cli) in a container 
+The Docker extension makes it easy to build, manage, and deploy containerized applications from Visual Studio Code. It also provides one-click debugging of Node.js, Python, and .NET inside a container.
 
-## Generating `Dockerfile`, `docker-compose.yml`, and `docker-compose.debug.yml`
-![dockerfile](images/generateFiles.gif)
+![Docker extension overview](resources/readme/overview.gif)
 
-## IntelliSense (completions) for `Dockerfile` and `docker-compose.yml` files.
+**Check out the [Working with containers](https://aka.ms/AA7arez) topic on the Visual Studio Code documentation site to get started**.
 
-![intelliSense](images/intelliSense.gif)
-
-## Docker commands
-Many of the most common Docker and docker compose commands are built right into the Command Palette (`F1`).
-
-![intelliSense](images/commands.gif)
-
-## Explorer Integration
-The Docker Explorer lets you view and manage your Images and Containers. The right click context menu provides quick access to the same rich set of commands found in the Command Palette (`F1`).
-
-![explorer integration](images/explorer.png)
-
-You can move the Explorer up or down by dragging the `DOCKER` sash, you can hide the Explorer by right clicking on the `DOCKER` sash and choosing `Remove from side bar`. To bring it back, right click on the `EXPLORER` title at the top of the side bar. This state is persisted on a _per-workspace_ basis. 
-
-If you want to turn the Explorer off for all workspaces, set the `showExplorer` configuration setting to `false`. Press `CMD+,` (or `CTRL+,` on Windows/Linux) to bring up the user level settings and add this to the right side:
-
-``` json
-"docker.showExplorer": false
-```
-
-## Azure CLI
-Microsoft ships the latest [Azure CLI](https://github.com/azure/azure-cli) as a [Docker image](https://hub.docker.com/r/azuresdk/azure-cli-python/). You can easily launch a container running the CLI from the Command Palette (press F1 and search for `Docker: Azure CLI`). The extension will then run an interactive terminal attached to the container. 
-
-After the container is started, you will be prompted to login to your Azure account. From there, set the subscription you want to work with using `az account set` (you can see all of your subscriptions with `az account list`). You do not need to login in every time you run the container becasue the extension volume mounts the local `$HOME/.azure` folder to the container's `$HOME/.azure` folder. 
-
-> If you do not have an Azure subscription, [sign up today](https://azure.microsoft.com/en-us/free/?b=16.48) for a free 30 day account and get **$200** in Azure Credits to try out any combination of Azure services.
+[The Docker extension wiki](https://github.com/Microsoft/vscode-docker/wiki) has troubleshooting tips and additional technical information.
 
 ## Installation
-In VS Code, press F1 and type in `ext install vscode-docker`. Once the extension is installed you will be prompted to restart Visual Studio Code which will only take (literally) a couple of seconds. 
 
-Of course, you will want to have Docker installed on your computer in order to run commands from the Command Palette (F1, type in `Docker`).  
+[Install Docker](https://docs.docker.com/install/) on your machine and add it to the system path.
 
-## Running commands on Linux
-By default, Docker runs as the root user, requiring other users to access it with `sudo`. This extension does not assume root access, so you will need to create a Unix group called docker and add users to it. Instructions can be found here: [Create a Docker group](https://docs.docker.com/engine/installation/linux/linux-postinstall/)
+On Linux, you should [enable rootless Docker](https://docs.docker.com/engine/security/rootless/) and set the generated Docker context to "rootless" (more secure) or [enable Docker CLI for the non-root user account](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) (less secure) that will be used to run VS Code.
 
-## Connecting to docker-machine
-The default connection of the extension is to connect to the local docker daemon. You can connect to a docker-machine instance if you launch Visual Studio Code and have the DOCKER_HOST environment variable set to a valid host.
+To install the extension, open the Extensions view, search for `docker` to filter results and select Docker extension authored by Microsoft.
+
+## Overview of the extension features
+
+### Editing Docker files
+
+You can get IntelliSense when editing your `Dockerfile` and `docker-compose.yml` files, with completions and syntax help for common commands.
+
+![IntelliSense for Dockerfiles](resources/readme/dockerfile-intellisense.png)
+
+In addition, you can use the Problems panel (<kbd>Ctrl+Shift+M</kbd> on Windows/Linux, <kbd>Shift+Command+M</kbd> on Mac) to view common errors for `Dockerfile` and `docker-compose.yml` files.
+
+### Generating Docker files
+
+You can add Docker files to your workspace by opening the Command Palette (<kbd>F1</kbd>) and using **Docker: Add Docker Files to Workspace** command. The command will generate a `Dockerfile` and `.dockerignore` file and add them to your workspace. The command will also ask you if you want to add Docker Compose files as well, but this is optional.
+
+The extension can scaffold Docker files for most popular development languages (C#, Node.js, Python, Ruby, Go, and Java) and customizes the generated Docker files accordingly. When these files are created, we also create the necessary artifacts to provide first-class debugging support for Node.js, Python, and .NET (C#).
+
+### Docker Explorer
+
+The Docker extension contributes a Docker Explorer view to VS Code. The Docker Explorer lets you examine and manage Docker assets: containers, images, volumes, networks, and container registries. If the Azure Account extension is installed, you can browse your Azure Container Registries as well.
+
+The right-click menu provides access to commonly used commands for each type of asset.
+
+![Docker view context menu](resources/readme/docker-view-context-menu.gif)
+
+You can rearrange the Docker view panes by dragging them up or down with a mouse and use the context menu to hide or show them.
+
+![Customize Docker view](resources/readme/docker-view-rearrange.gif)
+
+### Docker commands
+
+Many of the most common Docker commands are built right into the Command Palette:
+
+![Docker commands](resources/readme/command-palette.png)
+
+You can run Docker commands to manage [images](https://docs.docker.com/engine/reference/commandline/image/), [networks](https://docs.docker.com/engine/reference/commandline/network/), [volumes](https://docs.docker.com/engine/reference/commandline/volume/), [image registries](https://docs.docker.com/engine/reference/commandline/push/), and [Docker Compose](https://docs.docker.com/compose/reference/overview/). In addition, the **Docker: Prune System** command will remove stopped containers, dangling images, and unused networks and volumes.
+
+
+### Docker Compose
+
+[Docker Compose](https://docs.docker.com/compose/) lets you define and run multi-container applications with Docker. Our [Compose Language Service](https://github.com/microsoft/compose-language-service) in the Docker extension gives you IntelliSense and tab completions when authoring `docker-compose.yml` files. Press `Ctrl+Space` to see a list of valid Compose directives.
+
+ ![Docker Compose IntelliSense](resources/readme/tab-completions.gif)
+
+
+We also provide tooltips when you hover over a Docker Compose YAML attribute.
+
+ ![Docker Compose Tooltips](resources/readme/hover-support.png)
+
+
+While `Compose Up` allows you to run all of your services at once, our new feature `Compose Up - Select Services` lets you select any combination of the services you want to run.
+
+![Docker Compose Up - Select Subset](resources/readme/select-subset.gif)
+
+Once your `Compose Up` command completes, navigate to the Docker Explorer to view your services as a Compose Group. This allows you to start, stop, and view the logs of each service as a group.
+
+![Docker Compose Groups](resources/readme/compose-group.png)
+
+### Using image registries
+
+You can display the content and push, pull, or delete images from [Docker Hub](https://hub.docker.com/) and [Azure Container Registry](https://docs.microsoft.com/azure/container-registry/):
+
+![Azure Container Registry content](resources/readme/container-registry.png)
+
+An image in an Azure Container Registry can be deployed to Azure App Service directly from VS Code. See [Deploy images to Azure App Service](https://aka.ms/AA7arf8) to get started. For more information about how to authenticate to and work with registries, see [Using container registries](https://aka.ms/AA7arf9).
+
+### Debugging services running inside a container
+
+You can debug services built using Node.js, Python, or .NET (C#) that are running inside a container. The extension offers custom tasks that help with launching a service under the debugger and with attaching the debugger to a running service instance. For more information, see [Debug containerized apps](https://aka.ms/AA7arfb)  and [Customize the Docker extension](https://aka.ms/AA7ay8l).
+
+### Azure CLI integration
+
+You can start Azure CLI (command-line interface) in a standalone, Linux-based container with **Docker Images: Run Azure CLI** command. This gives you access to the full Azure CLI command set in an isolated environment. For more information on available commands, see [Get started with Azure CLI](https://docs.microsoft.com/cli/azure/get-started-with-azure-cli?view=azure-cli-latest#sign-in).
 
 ## Contributing
-There are a couple of ways you can contribute to this repo:
 
-- Ideas, feature requests and bugs: We are open to all ideas and we want to get rid of bugs! Use the Issues section to either report a new issue, provide your ideas or contribute to existing threads
-- Documentation: Found a typo or strangely worded sentences? Submit a PR!
-- Code: Contribute bug fixes, features or design changes.
+See [the contribution guidelines](CONTRIBUTING.md) for ideas and guidance on how to improve the extension. Thank you!
 
-## Legal
-Before we can accept your pull request you will need to sign a **Contribution License Agreement**. All you need to do is to submit a pull request, then the PR will get appropriately labelled (e.g. `cla-required`, `cla-norequired`, `cla-signed`, `cla-already-signed`). If you already signed the agreement we will continue with reviewing the PR, otherwise system will tell you how you can sign the CLA. Once you sign the CLA all future PR's will be labeled as `cla-signed`.
+### Code of Conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Telemetry
-This extension collects telemetry data to help us build a better experience for building micro-service applications with Docker and VS Code. We only collect data on which commands are executed. We do not collect any information about image names, paths, etc. The extension respects the `telemetry.enableTelemetry` setting which you can learn more about in our [FAQ](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting).
- 
-## License 
-[MIT](LICENSE)
+
+VS Code collects usage data and sends it to Microsoft to help improve our products and services. Read our [privacy statement](https://go.microsoft.com/fwlink/?LinkID=528096&clcid=0x409) to learn more. If you don’t wish to send usage data to Microsoft, you can set the `telemetry.telemetryLevel` setting to `off`. Learn more in our [FAQ](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting).
+
+## License
+
+[MIT](LICENSE.md)

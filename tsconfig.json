@@ -4,10 +4,20 @@
         "target": "es6",
         "outDir": "out",
         "lib": [
-            "es7"
+            "es6"
         ],
         "sourceMap": true,
-        "rootDir": "."
+        "rootDir": "src",
+        "strict": true, /* enable all strict type-checking options */
+        "alwaysStrict": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": false, // ESLint takes care of this for us
+        "noUnusedParameters": false, // ESLint takes care of this for us
+        "noImplicitAny": false, // TODO
+        "noImplicitOverride": false, // TODO
+        "strictNullChecks": false, // TODO
     },
     "exclude": [
         "node_modules",
